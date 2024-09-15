@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+    <div>
+        <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+
+            <h3>Login</h3>
+            <hr>
+
+            {% if messages %}
+            <div role="alert">
+                {% for message in messages %}
+                {{ message }}
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div>
+                <label>Username</label>
+                <input type="text" name="username" placeholder="Enter username" required>
+            </div>
+
+            <div>
+                <label>Password</label>
+                <input type="password" name="password" placeholder="Password" required>
+            </div>
+
+            <p>Don't have an account? <a href="{% url 'register' %}">Register</a> </p>
+
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</body>
+</html>

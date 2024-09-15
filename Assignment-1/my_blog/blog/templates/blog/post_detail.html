@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Post detail</title>
+</head>
+<body>
+
+<h1>
+    {{ post.author }}
+</h1>
+
+<p>
+    {{ post.title }}
+    {{ post.content }}
+</p>
+
+{% for comment in comments %}
+    <div class="comment">
+        <p><strong>{{ comment.author }}</strong> ({{ comment.created_at }}):</p>
+        <p>{{ comment.text }}</p>
+    </div>
+{% empty %}
+    <p>No comments yet. Be the first to comment!</p>
+{% endfor %}
+
+<hr>
+
+<h2>Add a comment</h2>
+
+{% if user.is_authenticated %}
+    <form method="post" action="{% url 'add_comment' post.id %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Post Comment</button>
+    </form>
+{% else %}
+    <p>You need to <a href="{% url 'login' %}">login</a> to comment.</p>
+{% endif %}
+
+
+<p>
+    Back to <a href="{% url 'posts' %}">Posts</a>
+</p>
+
+</body>
+</html>
