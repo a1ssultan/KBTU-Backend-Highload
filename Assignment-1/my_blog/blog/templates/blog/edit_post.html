@@ -3,13 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <title>Edit Post</title>
+    <style>
+        body, h1, form, input, textarea {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: floralwhite;
+            color: #333;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        .top-bar {
+            background-color: #00203fff;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .top-bar .site-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            text-align: center;
+            flex-grow: 1;
+            margin-left: 50px;
+            padding-left: 30px;
+        }
+
+        .top-bar .auth-links {
+            display: flex;
+            align-items: center;
+        }
+
+        .top-bar .auth-links a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+            margin-left: 0;
+            margin-right: 50px;
+        }
+
+        .top-bar .auth-links a:hover {
+            color: #77ffc2;
+        }
+
+        .top-bar .site-name a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .top-bar .site-name a:hover,
+        .top-bar .site-name a:active,
+        .top-bar .site-name a:visited {
+            color: #fff;
+        }
+
+        .content {
+            margin: 80px auto 20px;
+            max-width: 800px;
+            padding: 30px 50px 40px 35px;
+            background-color: #fff;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+        }
+
+        .content h1 {
+            color: #00203fff;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        form input[type="submit"] {
+            background-color: #00203fff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        form input[type="submit"]:hover {
+            background-color: #001a3f;
+        }
+
+        form textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        form input[type="text"], form input[type="textarea"] {
+            width: 100%;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+    </style>
 </head>
 <body>
-    <h1>Edit Post: {{ post.title }}</h1>
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Save Changes">
-    </form>
+    <div class="top-bar">
+        <div class="site-name">
+            <a href="{% url 'home' %}">MyBlog</a>
+        </div>
+        <div class="auth-links">
+            {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}" class="logout">Logout</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="content">
+        <h1>Edit Post: {{ post.title }}</h1>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Save Changes">
+        </form>
+    </div>
 </body>
 </html>

@@ -2,46 +2,211 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Post detail</title>
+    <title>Post Detail</title>
+    <style>
+        body, h1, h2, p, a, form, input, button {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: floralwhite;
+            color: #333;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        .top-bar {
+            background-color: #00203fff;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .top-bar .site-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            text-align: center;
+            flex-grow: 1;
+            padding-left: 80px;
+        }
+
+        .top-bar .auth-links {
+            display: flex;
+            align-items: center;
+        }
+
+        .top-bar .auth-links a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+            margin-left: 15px;
+            padding-right: 50px;
+        }
+
+        .top-bar .auth-links a:hover {
+            color: #77ffc2;
+        }
+
+        .top-bar .site-name a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .top-bar .site-name a:hover,
+        .top-bar .site-name a:active,
+        .top-bar .site-name a:visited {
+            color: #fff;
+        }
+
+        .content {
+            margin: 80px auto 20px;
+            max-width: 900px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .content h1 {
+            color: #00203fff;
+            margin-bottom: 20px;
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .content p {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            text-align: left;
+        }
+
+        .comment {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #fff;
+            text-align: left;
+        }
+
+        .comment p {
+            margin: 0 0 10px;
+        }
+
+        .comment p strong {
+            color: #00203fff;
+        }
+
+        form {
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        form input, form textarea, form button {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        form textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        form button {
+            background-color: #00203fff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        form button:hover {
+            background-color: #77ffc2;
+        }
+
+        .back-link {
+            margin-top: 20px;
+            display: inline-block;
+        }
+
+        .back-link a {
+            text-decoration: none;
+            color: #00203fff;
+            font-weight: bold;
+        }
+
+        .back-link a:hover {
+            color: #77ffc2;
+        }
+    </style>
 </head>
 <body>
-
-<h1>
-    {{ post.author }}
-</h1>
-
-<p>
-    {{ post.title }}
-    {{ post.content }}
-</p>
-
-{% for comment in comments %}
-    <div class="comment">
-        <p><strong>{{ comment.author }}</strong> ({{ comment.created_at }}):</p>
-        <p>{{ comment.text }}</p>
+    <div class="top-bar">
+        <div class="site-name">
+            <a href="{% url 'home' %}">MyBlog</a>
+        </div>
+        <div class="auth-links">
+            {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}" class="logout">Logout</a>
+            {% endif %}
+        </div>
     </div>
-{% empty %}
-    <p>No comments yet. Be the first to comment!</p>
-{% endfor %}
 
-<hr>
+    <div class="content">
+        <h1>{{ post.author }}</h1>
+        <p><strong>{{ post.title }}</strong></p>
+        <p>{{ post.content }}</p>
 
-<h2>Add a comment</h2>
+        {% for comment in comments %}
+            <div class="comment">
+                <p><strong>{{ comment.author }}</strong> ({{ comment.created_at }}):</p>
+                <p>{{ comment.text }}</p>
+            </div>
+        {% empty %}
+            <p>No comments yet. Be the first to comment!</p>
+        {% endfor %}
 
-{% if user.is_authenticated %}
-    <form method="post" action="{% url 'add_comment' post.id %}">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Post Comment</button>
-    </form>
-{% else %}
-    <p>You need to <a href="{% url 'login' %}">login</a> to comment.</p>
-{% endif %}
+        <hr>
 
+        <h2>Add a comment</h2>
 
-<p>
-    Back to <a href="{% url 'posts' %}">Posts</a>
-</p>
+        {% if user.is_authenticated %}
+            <form method="post" action="{% url 'add_comment' post.id %}">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Post Comment</button>
+            </form>
+        {% else %}
+            <p>You need to <a href="{% url 'login' %}">login</a> to comment.</p>
+        {% endif %}
 
+        <p class="back-link">
+            Back to <a href="{% url 'posts' %}">Posts</a>
+        </p>
+    </div>
 </body>
 </html>

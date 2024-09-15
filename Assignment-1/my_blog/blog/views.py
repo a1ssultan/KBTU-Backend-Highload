@@ -7,8 +7,6 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from blog.forms import PostForm, CommentForm
 from blog.models import Post
 
-from django.contrib.auth.models import User
-
 # Create your views here.
 
 
@@ -26,11 +24,10 @@ def all_posts(request):
         page_obj = p.get_page(1)
     except EmptyPage:
         page_obj = p.page(p.num_pages)
-    template = loader.get_template('blog/all_posts.html')
     context = {
         'page_obj': page_obj,
     }
-    return HttpResponse(template.render(context, request))
+    return render(request, 'blog/all_posts.html', context)
 
 
 def details(request, pk):
@@ -43,7 +40,7 @@ def details(request, pk):
         'comments': comments,
         'form': form,
     }
-    return HttpResponse(template.render(context, request))
+    return render(request, 'blog/post_detail.html', context)
 
 
 def add_comment(request, pk):
@@ -56,7 +53,7 @@ def add_comment(request, pk):
             comment.author = request.user
             comment.post = post
             comment.save()
-            return redirect('details', pk=pk)
+            return redirect('post_details', pk=pk)
 
     return redirect('post_detail', pk=pk)
 
@@ -70,7 +67,7 @@ def form(request):
         return redirect('posts')
     else:
         post_form = PostForm()
-        return render(request, 'blog/forms.html', {'form': post_form})
+        return render(request, 'blog/add_post.html', {'form': post_form})
 
 
 def edit_post(request, pk):

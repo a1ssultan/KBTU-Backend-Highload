@@ -3,52 +3,219 @@
 <head>
     <meta charset="UTF-8">
     <title>Main page</title>
+    <style>
+        body, h1, ul, li, a, p {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: floralwhite;
+            color: #333;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        .top-bar {
+            background-color: #00203fff;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .top-bar .site-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            text-align: center;
+            flex-grow: 1;
+            margin-left: 50px;
+            padding-left: 30px;
+        }
+
+        .top-bar .auth-links {
+            display: flex;
+            align-items: center;
+        }
+
+        .top-bar .auth-links a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+            margin-left: 0;
+            margin-right: 50px;
+        }
+
+        .top-bar .auth-links a:hover {
+            color: #77ffc2;
+        }
+
+        .top-bar .site-name a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .top-bar .site-name a:hover,
+        .top-bar .site-name a:active,
+        .top-bar .site-name a:visited {
+            color: #fff;
+        }
+
+
+        .content {
+            margin: 80px auto 20px;
+            max-width: 900px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .content h1 {
+            color: #00203fff;
+            margin-bottom: 20px;
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .content ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .content li {
+            margin: 15px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            max-width: 100%;
+            word-wrap: break-word;
+        }
+
+        .content li h2 {
+            margin: 0 0 10px;
+            font-size: 1.5em;
+            color: #00203fff;
+        }
+
+        .content li p {
+            margin: 5px 0;
+            font-size: 1em;
+        }
+
+        .content li .post-meta {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .content a {
+            text-decoration: none;
+            color: #00203fff;
+            font-weight: bold;
+        }
+
+        .content a:hover {
+            color: #77ffc2;
+        }
+
+        .pagination {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .pagination a {
+            text-decoration: none;
+            color: #00203fff;
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 0 5px;
+            display: inline-block;
+        }
+
+        .pagination a:hover {
+            background-color: #00203fff;
+            color: #fff;
+        }
+
+        .pagination strong {
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
+    <div class="top-bar">
+        <div class="site-name">
+            <a href="{% url 'home' %}">MyBlog</a>
+        </div>
+        <div class="auth-links">
+            {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}" class="logout">Logout</a>
+            {% endif %}
+        </div>
+    </div>
 
-<h1>Posts</h1>
-<ul>
-    {% if user.is_authenticated %}
-        <a href="{% url 'logout' %}">Logout</a>
-            {% for post in page_obj.object_list %}
-                <li><a href="details/{{ post.id }}">
-                    {{ post.author }}<br>
-                    {{ post.title }}
-
-                    {% if user == post.author %}
-                        <a href="{% url 'edit-post' post.pk %}">Edit</a>
-                        <a href="{% url 'delete-post' post.pk %}">Delete</a>
-                    {% endif %}
-                </a></li>
-            {% endfor %}
-
-            <div class="pagination">
-                {% if page_obj.has_previous %}
-                    <a href="?page=1">First</a>
-                    <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
-                {% endif %}
-
-                {% for num in page_obj.paginator.page_range %}
-                    {% if page_obj.number == num %}
-                        <strong>{{ num }}</strong>
-                    {% else %}
-                        <a href="?page={{ num }}">{{ num }}</a>
-                    {% endif %}
+    <div class="content">
+        <h1>Posts</h1>
+        <ul>
+            {% if user.is_authenticated %}
+                {% for post in page_obj.object_list %}
+                    <li>
+                        <h2><a href="{% url 'post_details' post.id%}">{{ post.title }}</a></h2>
+                        <p class="post-meta">By {{ post.author }} on {{ post.created_at|date:"F j, Y, g:i a" }}</p>
+                        <p>{{ post.content|slice:":100" }}...</p>
+                        {% if user == post.author %}
+                            <a href="{% url 'edit_post' post.pk %}">Edit</a>
+                            <a href="{% url 'delete_post' post.pk %}">Delete</a>
+                        {% endif %}
+                    </li>
                 {% endfor %}
 
-                {% if page_obj.has_next %}
-                    <a href="?page={{ page_obj.next_page_number }}">Next</a>
-                    <a href="?page={{ page_obj.paginator.num_pages }}">Last</a>
-                {% endif %}
-            </div>
+                <div class="pagination">
+                    {% if page_obj.has_previous %}
+                        <a href="?page=1">First</a>
+                        <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                    {% endif %}
 
-            <p>
-                Want to publish a post? Click <a href="{% url 'add-post' %}">here</a>
-            </p>
-    {% else %}
-        <li><a href="{% url 'login' %}">Login</a></li>
-        <li><a href="{% url 'register' %}">Register</a></li>
-    {% endif %}
-</ul>
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                            <strong>{{ num }}</strong>
+                        {% else %}
+                            <a href="?page={{ num }}">{{ num }}</a>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}">Next</a>
+                        <a href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+                    {% endif %}
+                </div>
+
+                <p>
+                    Want to publish a post? Click <a href="{% url 'add_post' %}">here</a>
+                </p>
+            {% else %}
+                <li><a href="{% url 'login' %}">Login</a></li>
+                <li><a href="{% url 'register' %}">Register</a></li>
+            {% endif %}
+        </ul>
+    </div>
 </body>
 </html>

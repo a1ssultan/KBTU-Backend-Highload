@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Delete Post</title>
+    <title>Add Post</title>
     <style>
-        body, h1, form, input, a {
+        body, h1, form, input, textarea, button {
             margin: 0;
             padding: 0;
             font-family: Arial, sans-serif;
@@ -19,6 +19,20 @@
             min-height: 100vh;
             margin: 0;
             padding: 0;
+        }
+
+        .content {
+            margin: 80px auto 20px;
+            max-width: 900px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .content h1 {
+            color: #00203fff;
+            margin-bottom: 20px;
+            font-size: 2em;
+            font-weight: bold;
         }
 
         .top-bar {
@@ -73,53 +87,59 @@
             color: #fff;
         }
 
-        .content {
-            margin: 80px auto 20px;
-            max-width: 800px;
-            padding: 20px;
-            text-align: center;
+        form {
             background-color: #fff;
             border-radius: 4px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-top: -10px;
+            padding: 40px 65px 30px 50px;
+            text-align: left;
         }
 
-        .content h1 {
-            color: #00203fff;
-            margin-bottom: 20px;
-            font-size: 1.8em;
+        form label {
+            display: block;
+            margin-bottom: 5px;
             font-weight: bold;
         }
 
-        form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        form input, form textarea, form button {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
         }
 
-        form input[type="submit"] {
-            background-color: #ff4d4d;
+        form textarea {
+            height: 150px;
+            resize: vertical;
+        }
+
+        form button {
+            background-color: #00203fff;
             color: #fff;
             border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
+            cursor: pointer;
             font-size: 1em;
             font-weight: bold;
-            cursor: pointer;
             transition: background-color 0.3s;
-            margin-bottom: 10px;
         }
 
-        form input[type="submit"]:hover {
-            background-color: #ff3333;
+        form button:hover {
+            background-color: #77ffc2;
         }
 
-        .content a {
+        .back-link {
+            margin-top: 20px;
+        }
+
+        .back-link a {
             text-decoration: none;
             color: #00203fff;
             font-weight: bold;
         }
 
-        .content a:hover {
+        .back-link a:hover {
             color: #77ffc2;
         }
     </style>
@@ -136,12 +156,15 @@
         </div>
     </div>
     <div class="content">
-        <h1>Are you sure you want to delete "{{ post.title }}"?</h1>
-        <form method="POST">
+        <h1>Add a Post</h1>
+        <form method="POST" action="{% url 'add_post' %}">
             {% csrf_token %}
-            <input type="submit" value="Yes, delete">
+            {{ form.as_p }}
+            <button type="submit">Post</button>
         </form>
-        <p><a href="{% url 'posts' %}">Cancel</a></p>
+        <p class="back-link">
+            <a href="{% url 'posts' %}">Back to Posts</a>
+        </p>
     </div>
 </body>
 </html>
