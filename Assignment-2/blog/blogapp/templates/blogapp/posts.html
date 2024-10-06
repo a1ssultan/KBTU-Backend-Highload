@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Posts</title>
+</head>
+<body>
+<div class="all-posts">
+    {% for post in posts %}
+    <h2><a href="{% url 'post_detail' post.id %}">{{ post.title }}</a></h2>
+    <p><strong>Author:</strong> {{ post.author.username }}</p>
+    <p>Created: {{ post.created_at }}</p>
+
+    <h3>Comments:</h3>
+    <hr>
+    {% for comment in post.comments.all %}
+    <p><strong>{{comment.author}}</strong>: {{ comment.content }} | <strong>{{ comment.created_at }}</strong></p>
+    {% empty %}
+    <p>No comments yet.</p>
+    {% endfor %}
+    {% endfor %}
+
+</div>
+</body>
+</html>

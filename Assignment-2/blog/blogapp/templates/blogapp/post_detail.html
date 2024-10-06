@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Post detail</title>
+</head>
+<body>
+{% load cache %}
+
+<div class="post_detail">
+    <div class="post_detail_characteristics">
+        <h2>{{ post.title }}</h2>
+        <p><strong>Author:</strong> {{ post.author.username }}</p>
+        <p><strong>Content:</strong> {{ post.content }}</p>
+        <p><strong>Created:</strong> {{ post.created_at }}</p>
+    </div>
+
+
+    <div class="comments">
+        {% cache 60 recent_comments post.id %}
+        {% if comment_count == 0 %}
+        <p>No recent comments!</p>
+        {% else %}
+        <h3>{{ comment_count }} recent comments:</h3>
+        {% endif%}
+        <p></p>
+        <ul>
+            {% for comment in recent_comments %}
+            <li><strong>{{comment.author}}</strong>: {{ comment.content }} | <strong>{{ comment.created_at }}</strong>
+            </li>
+            {% endfor %}
+        </ul>
+        {% endcache%}
+    </div>
+</div>
+</body>
+</html>
