@@ -13,6 +13,18 @@ from .utils import query_debugger
 # Create your views here.
 
 
+# @cache_page(60)
+@query_debugger
+def all_posts(request):
+    # efficient way
+    posts = Post.objects.prefetch_related('comments__author').select_related('author').all()
+
+    # not efficient way
+    # posts = Post.objects.all()
+
+    return render(request, "blogapp/posts.html", context={"posts": posts})
+
+
 def get_comment_count(post):
     cache_key = f'comment_count_{post.id}'
     count = cache.get(cache_key)
