@@ -6,14 +6,14 @@ from marketplace.models import Category
 
 
 class Command(BaseCommand):
-    help = 'Generate 10,000 products and 500 orders in the database'
+    help = "Generate 10,000 products and 500 orders in the database"
 
     def handle(self, *args, **options):
         categories = list(Category.objects.all())
 
         for i in range(10000):
-            name = f'Product {i + 1}'
-            description = f'Description for product {i + 1}.'
+            name = f"Product {i + 1}"
+            description = f"Description for product {i + 1}."
             price = round(random.uniform(5, 500), 2)
             stock = random.randint(1, 100)
 
@@ -24,7 +24,7 @@ class Command(BaseCommand):
                 description=description,
                 price=price,
                 stock=stock,
-                category=category
+                category=category,
             )
 
         users = User.objects.all()
@@ -38,9 +38,7 @@ class Command(BaseCommand):
                 quantity = random.randint(1, 3)
 
                 OrderItem.objects.create(
-                    order=order,
-                    product=product,
-                    quantity=quantity
+                    order=order, product=product, quantity=quantity
                 )
 
-        print('Products and orders created successfully!')
+        print("Products and orders created successfully!")

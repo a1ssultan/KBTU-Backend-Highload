@@ -7,7 +7,12 @@ from rest_framework import status
 from django.core.cache import cache
 
 from marketplace.models import Product, Category, Order, OrderItem
-from marketplace.serializers import ProductSerializer, CategorySerializer, OrderSerializer, OrderItemSerializer
+from marketplace.serializers import (
+    ProductSerializer,
+    CategorySerializer,
+    OrderSerializer,
+    OrderItemSerializer,
+)
 
 
 class ProductList(APIView):
@@ -45,7 +50,7 @@ class OrderList(APIView):
         if orders:
             return Response(orders, status=status.HTTP_200_OK)
 
-        orders = request.user.orders.prefetch_related('items__product').all()
+        orders = request.user.orders.prefetch_related("items__product").all()
         serializer = OrderSerializer(orders, many=True)
         cache.set(cache_key, serializer.data, timeout=60 * 15)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -56,12 +61,16 @@ class OrderList(APIView):
             serializer.save(user=request.user)
             cache.delete(f"cached_orders_user_id_{request.user.id}")
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
+        )
 
 
 class OrderDetail(APIView):
     def get_object(self, pk):
-        return get_object_or_404(Order.objects.select_related("user"), pk=pk, user=self.request.user)
+        return get_object_or_404(
+            Order.objects.select_related("user"), pk=pk, user=self.request.user
+        )
 
     def get(self, request, order_id):
         cache_key = f"cached_order_{order_id}_user_{request.user.id}"
@@ -83,18 +92,24 @@ class OrderDetail(APIView):
 
 class OrderItemAdd(APIView):
     def post(self, request, order_id):
-        order = get_object_or_404(Order.objects.prefetch_related('items'), pk=order_id, user=request.user)
-        product = get_object_or_404(Product, pk=request.data['product_id'])
-        quantity = request.data.get('quantity', 1)
+        order = get_object_or_404(
+            Order.objects.prefetch_related("items"), pk=order_id, user=request.user
+        )
+        product = get_object_or_404(Product, pk=request.data["product_id"])
+        quantity = request.data.get("quantity", 1)
 
         cache_key = f"cached_order_{order_id}_user_{request.user.id}"
         cache.delete(cache_key)
 
-        serializer = OrderItemSerializer(data={'order': order.id, 'product': product.id, 'quantity': quantity})
+        serializer = OrderItemSerializer(
+            data={"order": order.id, "product": product.id, "quantity": quantity}
+        )
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
+        )
 
 
 class OrderItemDelete(APIView):
@@ -114,7 +129,7 @@ class OrderItemClear(APIView):
         order = get_object_or_404(Order, pk=order_id, user=request.user)
         order.items.all().delete()
 
-        cache_key = f'cached_order_{order_id}_user_{request.user.id}'
+        cache_key = f"cached_order_{order_id}_user_{request.user.id}"
         cache.delete(cache_key)
 
         return Response(status=status.HTTP_204_NO_CONTENT)

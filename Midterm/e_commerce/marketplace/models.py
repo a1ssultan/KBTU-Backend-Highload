@@ -19,7 +19,9 @@ class Product(models.Model):
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     stock = models.IntegerField()
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
+    category = models.ForeignKey(
+        Category, on_delete=models.CASCADE, related_name="products"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -28,10 +30,12 @@ class Product(models.Model):
 
 
 class Order(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders', db_index=True)
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="orders", db_index=True
+    )
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     @property
     def total_price(self):
         total_price = sum(item.product.price for item in self.items.all())
@@ -42,7 +46,9 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items', db_index=True)
+    order = models.ForeignKey(
+        Order, on_delete=models.CASCADE, related_name="items", db_index=True
+    )
     product = models.ForeignKey(Product, on_delete=models.CASCADE, db_index=True)
     quantity = models.IntegerField(validators=[MinValueValidator(1)])
 
@@ -51,4 +57,8 @@ class OrderItem(models.Model):
         return self.product.price * self.quantity
 
     def __str__(self):
-        return "Order id: %s, product: %s, quantity %s" % (self.id, self.product, self.quantity)
+        return "Order id: %s, product: %s, quantity %s" % (
+            self.id,
+            self.product,
+            self.quantity,
+        )
