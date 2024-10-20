@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  django-1:
+    build: .
+    command: gunicorn --bind 0.0.0.0:8000 e_commerce.wsgi:application
+    volumes:
+      - .:/app
+    environment:
+      - DEBUG=True
+
+  django-2:
+    build: .
+    command: gunicorn --bind 0.0.0.0:8000 e_commerce.wsgi:application
+    volumes:
+      - .:/app
+    environment:
+      - DEBUG=True
+
+  django-3:
+    build: .
+    command: gunicorn --bind 0.0.0.0:8000 e_commerce.wsgi:application
+    volumes:
+      - .:/app
+    environment:
+      - DEBUG=True
+
+  db:
+    image: postgres:17
+    restart: always
+    environment:
+      POSTGRES_DB: e_commerce
+      POSTGRES_USER: e_commerce_admin
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "80:80"
+    depends_on:
+      - django-1
+
+  redis:
+    image: redis:alpine
+    restart: always
+    ports:
+      - "6379:6379"
+
+volumes:
+  postgres_data:

@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from rest_framework.permissions import AllowAny
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -10,6 +11,9 @@ from marketplace.serializers import ProductSerializer, CategorySerializer, Order
 
 
 class ProductList(APIView):
+    authentication_classes = ()
+    permission_classes = (AllowAny,)
+
     def get(self, request):
         products = cache.get("cached_products")
         if products:
@@ -21,6 +25,9 @@ class ProductList(APIView):
 
 
 class CategoryList(APIView):
+    authentication_classes = ()
+    permission_classes = (AllowAny,)
+
     def get(self, request):
         categories = cache.get("cached_categories")
         if categories:
