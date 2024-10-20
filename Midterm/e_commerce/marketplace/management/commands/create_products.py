@@ -1,26 +1,21 @@
 import random
 from django.core.management.base import BaseCommand
-from marketplace.models import Product, Category, Order, OrderItem
-from auth.models import User
+from marketplace.models import Product, Order, OrderItem
+from authentication.models import User
+from marketplace.models import Category
 
 
 class Command(BaseCommand):
     help = 'Generate 10,000 products and 500 orders in the database'
 
     def handle(self, *args, **options):
-        categories = [
-            Category.objects.create(name='Smartphones'),
-            Category.objects.create(name='Computers'),
-            Category.objects.create(name='Watches'),
-            Category.objects.create(name='TVs'),
-            Category.objects.create(name='Headphones'),
-        ]
+        categories = list(Category.objects.all())
 
         for i in range(10000):
             name = f'Product {i + 1}'
             description = f'Description for product {i + 1}.'
             price = round(random.uniform(5, 500), 2)
-            stock = random.randint(0, 100)
+            stock = random.randint(1, 100)
 
             category = random.choice(categories)
 

@@ -5,7 +5,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 
 class User(AbstractUser):
-    phone_number = PhoneNumberField(blank=False, null=False, unique=True)
+    phone_number = PhoneNumberField(blank=False, null=False, unique=True, db_index=True)
     address = models.TextField(blank=False, null=False)
 
     def save(self, *args, **kwargs):

@@ -24,7 +24,7 @@ class CategoryList(APIView):
 
 class OrderList(APIView):
     def get(self, request):
-        orders = request.user.orders.all()
+        orders = request.user.orders.prefetch_related('items__product').all()
         serializer = OrderSerializer(orders, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -53,7 +53,7 @@ class OrderDetail(APIView):
 
 class OrderItemAdd(APIView):
     def post(self, request, order_id):
-        order = get_object_or_404(Order, pk=order_id, user=request.user)
+        order = get_object_or_404(Order.objects.prefetch_related('items'), pk=order_id, user=request.user)
         product = get_object_or_404(Product, pk=request.data['product_id'])
         quantity = request.data.get('quantity', 1)
 

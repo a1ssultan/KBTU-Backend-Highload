@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'drf_yasg',
 
+    "debug_toolbar",
+
     'authentication',
     'marketplace',
 ]
@@ -77,6 +79,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = 'e_commerce.urls'
@@ -96,6 +99,11 @@ TEMPLATES = [
         },
     },
 ]
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
+
 
 WSGI_APPLICATION = 'e_commerce.wsgi.application'
 
