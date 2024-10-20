@@ -12,6 +12,11 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -165,3 +170,9 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+# EMAIL NOTIFICATIONS SENDING
+
+GOOGLE_EMAIL = os.environ.get("GOOGLE_EMAIL")
+GOOGLE_EMAIL_APP_PASSWORD = os.environ.get("GOOGLE_EMAIL_APP_PASSWORD")

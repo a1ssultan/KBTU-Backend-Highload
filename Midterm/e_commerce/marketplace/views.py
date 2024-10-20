@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.core.cache import cache
 
+from marketplace.emails import send_email
 from marketplace.models import Product, Category, Order, OrderItem
 from marketplace.serializers import (
     ProductSerializer,
@@ -60,6 +61,11 @@ class OrderList(APIView):
         if serializer.is_valid():
             serializer.save(user=request.user)
             cache.delete(f"cached_orders_user_id_{request.user.id}")
+            send_email(
+                sent_to=request.user.email,
+                email_subject="You created a new order",
+                email_body="Thank you for your order! You can now add products to order and then pay for it.",
+            )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(
             {"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
