@@ -1,3 +1,4 @@
+from django.db import transaction
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
@@ -6,6 +7,7 @@ from .serializers import KeyValueSerializer
 
 
 class KeyValueViewSet(viewsets.ViewSet):
+    @transaction.atomic
     def create(self, request):
         serializer = KeyValueSerializer(data=request.data)
         if serializer.is_valid():
@@ -13,6 +15,7 @@ class KeyValueViewSet(viewsets.ViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @transaction.atomic
     def retrieve(self, request, key=None):
         try:
             kv = KeyValue.objects.get(key=key)
