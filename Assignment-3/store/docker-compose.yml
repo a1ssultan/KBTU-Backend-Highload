@@ -52,5 +52,50 @@ services:
       - django-1
       - django-2
 
+  grafana:
+    container_name: "grafana"
+    restart: unless-stopped
+    image: grafana/grafana-enterprise
+    ports:
+      - "3001:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+    environment:
+      - TERM=linux
+      - GF_SERVER_ROOT_URL=http://my.grafana.server/
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-polystat-panel
+      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
+      - TZ=Asia/Almaty
+
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:v2.54.1
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    restart: unless-stopped
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+
+  loki:
+    hostname: loki
+    image: grafana/loki:latest
+    environment:
+      TZ: "Almaty/Asia"
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/retention-config.yaml
+    volumes:
+      - ./loki-config.yaml:/etc/loki/retention-config.yaml
+
 volumes:
   postgres_data:
+  grafana-data:
+  prometheus_data:
