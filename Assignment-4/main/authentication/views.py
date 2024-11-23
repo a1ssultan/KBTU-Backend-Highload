@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
+from django_otp.plugins.otp_totp.models import TOTPDevice
 
 
 def login_page(request):
@@ -20,6 +21,11 @@ def login_page(request):
             return redirect('/authentication/login/')
         else:
             login(request, user)
+
+            # Redirect to 2FA setup if the user has no registered TOTP device
+            if not TOTPDevice.objects.filter(user=user, confirmed=True).exists():
+                return redirect('/account/two_factor/setup/')
+
             return redirect('/home/')
 
     return render(request, 'login.html')

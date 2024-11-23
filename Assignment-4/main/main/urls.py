@@ -19,7 +19,6 @@ from django.urls import path, include
 from .views import home
 from two_factor.urls import urlpatterns as two_factor_urls
 
-
 urlpatterns = [
     path('home/', home, name="recipes"),
     path('admin/', admin.site.urls),
