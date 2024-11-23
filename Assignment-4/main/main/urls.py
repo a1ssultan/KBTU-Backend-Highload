@@ -17,12 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from .views import home
-from two_factor.urls import urlpatterns as two_factor_urls
 
 urlpatterns = [
     path('home/', home, name="recipes"),
     path('admin/', admin.site.urls),
     path('tasks/', include('tasks.urls')),
     path('authentication/', include('authentication.urls')),
-    path('', include(two_factor_urls)),
 ]
