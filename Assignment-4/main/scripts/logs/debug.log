@@ -8929,3 +8929,99 @@ Traceback (most recent call last):
     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 AttributeError: 'function' object has no attribute 'apply_async'
 ERROR 2024-11-24 10:33:53,728 basehttp "POST /data_processing/upload/ HTTP/1.1" 500 67727
+WARNING 2024-11-24 11:16:17,468 log Not Found: /
+WARNING 2024-11-24 11:16:17,468 basehttp "GET / HTTP/1.1" 404 2785
+WARNING 2024-11-24 11:16:22,143 log Not Found: /progress//
+WARNING 2024-11-24 11:16:22,144 basehttp "GET /progress// HTTP/1.1" 404 2833
+ERROR 2024-11-24 11:16:26,799 log Internal Server Error: /data_processing/upload/
+Traceback (most recent call last):
+  File "/Users/aisultankhalelov/Desktop/KBTU/KBTU-Backend-Highload/Assignment-4/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/aisultankhalelov/Desktop/KBTU/KBTU-Backend-Highload/Assignment-4/venv/lib/python3.13/site-packages/django/db/backends/sqlite3/base.py", line 354, in execute
+    return super().execute(query, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: data_processing_progress
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/aisultankhalelov/Desktop/KBTU/KBTU-Backend-Highload/Assignment-4/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/aisultankhalelov/Desktop/KBTU/KBTU-Backend-Highload/Assignment-4/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aisultankhalelov/Desktop/KBTU/KBTU-Backend-Highload/Assignment-4/main/data_processing/views.py", line 24, in upload_csv
+    Progress.objects.create(task_id=task_id, progress=0.0, status="Started")
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aisultankhalelov/Desktop/KBTU/KBTU-Backend-Highload/Assignment-4/venv/lib/python3.13/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/aisultankhalelov/Desktop/KBTU/KBTU-Backend-Highload/Assignment-4/venv/lib/python3.13/site-packages/django/db/models/query.py", line 679, in create
+    obj.save(force_insert=True, using=self.db)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aisultankhalelov/Desktop/KBTU/KBTU-Backend-Highload/Assignment-4/venv/lib/python3.13/site-packages/django/db/models/base.py", line 891, in save
+    self.save_base(
+    ~~~~~~~~~~~~~~^
+        using=using,
+        ^^^^^^^^^^^^
+    ...<2 lines>...
+        update_fields=update_fields,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/aisultankhalelov/Desktop/KBTU/KBTU-Backend-Highload/Assignment-4/venv/lib/python3.13/site-packages/django/db/models/base.py", line 997, in save_base
+    updated = self._save_table(
+        raw,
+    ...<4 lines>...
+        update_fields,
+    )
+  File "/Users/aisultankhalelov/Desktop/KBTU/KBTU-Backend-Highload/Assignment-4/venv/lib/python3.13/site-packages/django/db/models/base.py", line 1160, in _save_table
+    results = self._do_insert(
+        cls._base_manager, using, fields, returning_fields, raw
+    )
+  File "/Users/aisultankhalelov/Desktop/KBTU/KBTU-Backend-Highload/Assignment-4/venv/lib/python3.13/site-packages/django/db/models/base.py", line 1201, in _do_insert
+    return manager._insert(
+           ~~~~~~~~~~~~~~~^
+        [self],
+        ^^^^^^^
+    ...<3 lines>...
+        raw=raw,
+        ^^^^^^^^
+    )
+    ^
+  File "/Users/aisultankhalelov/Desktop/KBTU/KBTU-Backend-Highload/Assignment-4/venv/lib/python3.13/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/aisultankhalelov/Desktop/KBTU/KBTU-Backend-Highload/Assignment-4/venv/lib/python3.13/site-packages/django/db/models/query.py", line 1847, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/Users/aisultankhalelov/Desktop/KBTU/KBTU-Backend-Highload/Assignment-4/venv/lib/python3.13/site-packages/django/db/models/sql/compiler.py", line 1836, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/aisultankhalelov/Desktop/KBTU/KBTU-Backend-Highload/Assignment-4/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/aisultankhalelov/Desktop/KBTU/KBTU-Backend-Highload/Assignment-4/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/aisultankhalelov/Desktop/KBTU/KBTU-Backend-Highload/Assignment-4/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/Users/aisultankhalelov/Desktop/KBTU/KBTU-Backend-Highload/Assignment-4/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aisultankhalelov/Desktop/KBTU/KBTU-Backend-Highload/Assignment-4/venv/lib/python3.13/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/Users/aisultankhalelov/Desktop/KBTU/KBTU-Backend-Highload/Assignment-4/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/aisultankhalelov/Desktop/KBTU/KBTU-Backend-Highload/Assignment-4/venv/lib/python3.13/site-packages/django/db/backends/sqlite3/base.py", line 354, in execute
+    return super().execute(query, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: no such table: data_processing_progress
+ERROR 2024-11-24 11:16:26,802 basehttp "POST /data_processing/upload/ HTTP/1.1" 500 158304
+WARNING 2024-11-24 11:17:00,170 log Not Found: /progress/498e59a2-1e48-438d-a298-862e70289c55/
+WARNING 2024-11-24 11:17:00,170 basehttp "GET /progress/498e59a2-1e48-438d-a298-862e70289c55/ HTTP/1.1" 404 2941
