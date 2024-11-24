@@ -7,7 +7,6 @@ from rest_framework import generics
 
 from .models import UserProfile
 from .serializers import UserProfileSerializer
-from .utils import IsAdminUser
 
 
 def login_page(request):

@@ -6,7 +6,7 @@ import re
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields = ['id', 'name', 'age', 'website', 'email']
+        fields = ['id', 'name', 'age', 'website', 'email', 'phone_number']
 
     def validate_name(self, value):
         if re.search(r"[;'\"--]", value):
