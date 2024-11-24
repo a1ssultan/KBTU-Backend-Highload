@@ -13,5 +13,13 @@ class IndustryData(models.Model):
     value = models.FloatField()
     industry_code_anzsic06 = models.TextField()
 
+    class Meta:
+        indexes = [
+            models.Index(fields=['year']),
+            models.Index(fields=['industry_code_nzsioc']),
+            models.Index(fields=['variable_code']),
+            models.Index(fields=['value']),
+        ]
+
     def __str__(self):
         return f"{self.year} - {self.industry_name_nzsioc}"
