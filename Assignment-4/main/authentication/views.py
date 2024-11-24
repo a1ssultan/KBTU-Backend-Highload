@@ -3,6 +3,11 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django_otp.plugins.otp_totp.models import TOTPDevice
+from rest_framework import generics
+
+from .models import UserProfile
+from .serializers import UserProfileSerializer
+from .utils import IsAdminUser
 
 
 def login_page(request):
@@ -57,3 +62,13 @@ def register_page(request):
         return redirect('/authentication/register/')
 
     return render(request, 'register.html')
+
+
+class UserProfileListView(generics.ListCreateAPIView):
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
+
+
+class UserProfileDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
