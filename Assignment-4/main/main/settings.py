@@ -48,6 +48,7 @@ INSTALLED_APPS = [
 
     'tasks',
     'authentication',
+    'data_processing',
 
     'django_otp',
     'django_otp.plugins.otp_static',

@@ -8906,3 +8906,26 @@ WARNING 2024-11-24 08:48:51,984 log Forbidden (CSRF cookie not set.): /tasks/sen
 WARNING 2024-11-24 08:48:51,985 basehttp "POST /tasks/send-email/ HTTP/1.1" 403 2855
 WARNING 2024-11-24 08:48:52,010 log Forbidden (CSRF cookie not set.): /tasks/send-email/
 WARNING 2024-11-24 08:48:52,011 basehttp "POST /tasks/send-email/ HTTP/1.1" 403 2855
+WARNING 2024-11-24 10:20:15,131 log Not Found: /
+WARNING 2024-11-24 10:20:15,133 basehttp "GET / HTTP/1.1" 404 2792
+WARNING 2024-11-24 10:20:28,713 log Not Found: /data_processing/upload
+WARNING 2024-11-24 10:20:28,714 basehttp "GET /data_processing/upload HTTP/1.1" 404 2876
+WARNING 2024-11-24 10:20:31,694 log Not Found: /data_processing/upload/
+WARNING 2024-11-24 10:20:31,695 basehttp "GET /data_processing/upload/ HTTP/1.1" 404 2995
+WARNING 2024-11-24 10:22:56,676 log Not Found: /data_processing/upload//SURVEY_BACKEND.csv
+WARNING 2024-11-24 10:22:56,678 basehttp "GET /data_processing/upload//SURVEY_BACKEND.csv HTTP/1.1" 404 3045
+WARNING 2024-11-24 10:23:01,128 log Not Found: /data_processing/upload/SURVEY_BACKEND.csv
+WARNING 2024-11-24 10:23:01,129 basehttp "GET /data_processing/upload/SURVEY_BACKEND.csv HTTP/1.1" 404 3042
+WARNING 2024-11-24 10:24:26,124 log Not Found: /
+WARNING 2024-11-24 10:24:26,125 basehttp "GET / HTTP/1.1" 404 2785
+ERROR 2024-11-24 10:33:53,727 log Internal Server Error: /data_processing/upload/
+Traceback (most recent call last):
+  File "/Users/aisultankhalelov/Desktop/KBTU/KBTU-Backend-Highload/Assignment-4/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/aisultankhalelov/Desktop/KBTU/KBTU-Backend-Highload/Assignment-4/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aisultankhalelov/Desktop/KBTU/KBTU-Backend-Highload/Assignment-4/main/data_processing/views.py", line 15, in upload_csv
+    process_csv_file.apply_async(args=[file_url])
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'function' object has no attribute 'apply_async'
+ERROR 2024-11-24 10:33:53,728 basehttp "POST /data_processing/upload/ HTTP/1.1" 500 67727
