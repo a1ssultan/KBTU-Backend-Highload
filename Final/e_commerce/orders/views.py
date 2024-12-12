@@ -1,18 +1,15 @@
 from django.db import transaction
-from rest_framework import viewsets, status
-from rest_framework.decorators import action
-from rest_framework.response import Response
-
-from orders.models import Order, OrderItem, Payment, ShoppingCart, CartItem
+from orders.models import CartItem, Order, Payment, ShoppingCart
 from orders.serializers import (
+    CartItemSerializer,
     OrderSerializer,
-    OrderItemSerializer,
     PaymentSerializer,
     ShoppingCartSerializer,
-    CartItemSerializer,
 )
 from products.models import Product
-
+from rest_framework import status, viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
 # Create your views here.
 

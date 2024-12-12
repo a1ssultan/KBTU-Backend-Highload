@@ -1,5 +1,5 @@
 from django.urls import path
-from wishlists.views import WishlistView, ClearWishlistView
+from wishlists.views import ClearWishlistView, WishlistView
 
 urlpatterns = [
     path("", WishlistView.as_view(), name="wishlist"),

@@ -1,8 +1,6 @@
-from django.db import models
-
 from authentication.models import User
+from django.db import models
 from products.models import Product
-
 
 # Create your models here.
 

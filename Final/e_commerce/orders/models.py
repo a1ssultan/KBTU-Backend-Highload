@@ -1,9 +1,7 @@
+from authentication.models import User
 from django.core.validators import MinValueValidator
 from django.db import models
-
-from authentication.models import User
 from products.models import Product
-
 
 # Create your models here.
 
@@ -98,7 +96,9 @@ class Payment(models.Model):
         FAILED = "failed", "Failed"
 
     id = models.BigAutoField(primary_key=True)
-    order = models.ForeignKey(Order, on_delete=models.SET_NULL, related_name="payments")
+    order = models.ForeignKey(
+        Order, on_delete=models.SET_NULL, related_name="payments", null=True
+    )
     payment_method = models.CharField(max_length=20, choices=PaymentMethod)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(

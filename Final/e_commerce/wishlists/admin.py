@@ -1,7 +1,5 @@
 from django.contrib import admin
-
 from wishlists.models import Wishlist, WishlistItem
-
 
 # Register your models here.
 

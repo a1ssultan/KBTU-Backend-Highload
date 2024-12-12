@@ -1,8 +1,7 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
-
 from reviews.models import Review
-from reviews.serializers import ReviewSerializer, CreateUpdateReviewSerializer
+from reviews.serializers import CreateUpdateReviewSerializer, ReviewSerializer
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
