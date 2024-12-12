@@ -4,64 +4,84 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from orders.models import Order, OrderItem, Payment, ShoppingCart, CartItem
-from orders.serializers import OrderSerializer, OrderItemSerializer, PaymentSerializer, ShoppingCartSerializer, \
-    CartItemSerializer
+from orders.serializers import (
+    OrderSerializer,
+    OrderItemSerializer,
+    PaymentSerializer,
+    ShoppingCartSerializer,
+    CartItemSerializer,
+)
 from products.models import Product
 
 
 # Create your views here.
 
+
 class OrderViewSet(viewsets.ModelViewSet):
-    queryset = Order.objects.prefetch_related('items').select_related('user')
+    queryset = Order.objects.prefetch_related("items").select_related("user")
     serializer_class = OrderSerializer
 
     @transaction.atomic
     def perform_create(self, serializer):
         serializer.save()
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=["post"])
     def cancel(self, request, pk=None):
         order = self.get_object()
         if order.order_status == Order.OrderStatus.PAID:
-            return Response({'error': 'Cannot cancel a paid order'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "Cannot cancel a paid order"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-        if order.order_status not in [Order.OrderStatus.CANCELED, Order.OrderStatus.DELIVERED]:
+        if order.order_status not in [
+            Order.OrderStatus.CANCELED,
+            Order.OrderStatus.DELIVERED,
+        ]:
             order.order_status = Order.OrderStatus.CANCELED
             order.save()
-            return Response({'status': 'Order canceled'}, status=status.HTTP_200_OK)
-        return Response({'error': 'Cannot cancel this order'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"status": "Order canceled"}, status=status.HTTP_200_OK)
+        return Response(
+            {"error": "Cannot cancel this order"}, status=status.HTTP_400_BAD_REQUEST
+        )
 
 
 class ShoppingCartViewSet(viewsets.ModelViewSet):
-    queryset = ShoppingCart.objects.prefetch_related('items').select_related('user')
+    queryset = ShoppingCart.objects.prefetch_related("items").select_related("user")
     serializer_class = ShoppingCartSerializer
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
     @transaction.atomic
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=["post"])
     def add_item(self, request, pk=None):
         cart = self.get_object()
-        product_id = request.data.get('product')
-        quantity = request.data.get('quantity', 1)
+        product_id = request.data.get("product")
+        quantity = request.data.get("quantity", 1)
 
         if not product_id:
-            return Response({'error': 'Product ID is required'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "Product ID is required"}, status=status.HTTP_400_BAD_REQUEST
+            )
 
         try:
             product = Product.objects.get(id=product_id)
         except Product.DoesNotExist:
-            return Response({'error': 'Product not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND
+            )
 
-        cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product, defaults={'quantity': quantity})
+        cart_item, created = CartItem.objects.get_or_create(
+            cart=cart, product=product, defaults={"quantity": quantity}
+        )
 
         if not created:
             cart_item.quantity += quantity
             if cart_item.quantity > product.stock_quantity:
                 return Response(
-                    {'error': f'Not enough stock for product {product.name}'},
-                    status=status.HTTP_400_BAD_REQUEST
+                    {"error": f"Not enough stock for product {product.name}"},
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
             cart_item.save()
 
@@ -69,5 +89,5 @@ class ShoppingCartViewSet(viewsets.ModelViewSet):
 
 
 class PaymentViewSet(viewsets.ModelViewSet):
-    queryset = Payment.objects.select_related('order')
+    queryset = Payment.objects.select_related("order")
     serializer_class = PaymentSerializer

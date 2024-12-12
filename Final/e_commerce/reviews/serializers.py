@@ -7,7 +7,7 @@ from reviews.models import Review
 class ProductReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ['id', 'name']
+        fields = ["id", "name"]
 
 
 class UserReviewSerializer(serializers.ModelSerializer):
@@ -15,7 +15,7 @@ class UserReviewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'name', 'email']
+        fields = ["id", "name", "email"]
 
     def get_name(self, obj):
         return f"{obj.first_name} {obj.last_name}".strip()
@@ -27,13 +27,13 @@ class ReviewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Review
-        fields = '__all__'
+        fields = "__all__"
 
 
 class CreateUpdateReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
-        fields = ['product', 'rating', 'comment']
+        fields = ["product", "rating", "comment"]
 
     def validate_rating(self, value):
         if not (1 <= value <= 5):

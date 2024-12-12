@@ -18,7 +18,9 @@ class Order(models.Model):
 
     id = models.BigAutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="orders")
-    order_status = models.CharField(max_length=20, choices=OrderStatus, default=OrderStatus.CREATED)
+    order_status = models.CharField(
+        max_length=20, choices=OrderStatus, default=OrderStatus.CREATED
+    )
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -32,10 +34,12 @@ class Order(models.Model):
 
 class OrderItem(models.Model):
     id = models.BigAutoField(primary_key=True)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="items")
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(validators=[MinValueValidator(1)])
-    price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(1)])
+    price = models.DecimalField(
+        max_digits=10, decimal_places=2, validators=[MinValueValidator(1)]
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -45,7 +49,9 @@ class OrderItem(models.Model):
 
 class ShoppingCart(models.Model):
     id = models.BigAutoField(primary_key=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='shopping_cart')
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="shopping_cart"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -55,7 +61,9 @@ class ShoppingCart(models.Model):
 
 class CartItem(models.Model):
     id = models.BigAutoField(primary_key=True)
-    cart = models.ForeignKey(ShoppingCart, on_delete=models.CASCADE, related_name='items')
+    cart = models.ForeignKey(
+        ShoppingCart, on_delete=models.CASCADE, related_name="items"
+    )
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -70,9 +78,18 @@ class CartItem(models.Model):
 
 class Payment(models.Model):
     class PaymentMethod(models.TextChoices):
-        CREDIT_CARD = "credit_card", "Credit card",
-        DEBIT_CARD = "debit_card", "Debit card",
-        DIGITAL_WALLET = "digital_wallet", "Digital Wallet",
+        CREDIT_CARD = (
+            "credit_card",
+            "Credit card",
+        )
+        DEBIT_CARD = (
+            "debit_card",
+            "Debit card",
+        )
+        DIGITAL_WALLET = (
+            "digital_wallet",
+            "Digital Wallet",
+        )
         BANK = "bank", "Bank"
 
     class PaymentStatus(models.TextChoices):
@@ -81,10 +98,12 @@ class Payment(models.Model):
         FAILED = "failed", "Failed"
 
     id = models.BigAutoField(primary_key=True)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='payments')
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, related_name="payments")
     payment_method = models.CharField(max_length=20, choices=PaymentMethod)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    status = models.CharField(max_length=20, choices=PaymentStatus, default=PaymentStatus.PENDING)
+    status = models.CharField(
+        max_length=20, choices=PaymentStatus, default=PaymentStatus.PENDING
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

@@ -30,13 +30,14 @@ class UserViewSet(viewsets.ViewSet):
 
     def destroy(self, request):
         request.user.delete()
-        return Response({'detail': 'User deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+        return Response(
+            {"detail": "User deleted successfully"}, status=status.HTTP_204_NO_CONTENT
+        )
 
-    @action(detail=False, methods=['put'])
+    @action(detail=False, methods=["put"])
     def update(self, request):
         serializer = UserSerializer(request.user, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
