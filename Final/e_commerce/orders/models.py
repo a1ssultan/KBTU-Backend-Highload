@@ -15,7 +15,9 @@ class Order(models.Model):
         CANCELED = "canceled", "Canceled"
 
     id = models.BigAutoField(primary_key=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="orders", db_index=True)
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="orders", db_index=True
+    )
     order_status = models.CharField(
         max_length=20, choices=OrderStatus, default=OrderStatus.CREATED, db_index=True
     )
@@ -32,7 +34,9 @@ class Order(models.Model):
 
 class OrderItem(models.Model):
     id = models.BigAutoField(primary_key=True)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="items", db_index=True)
+    order = models.ForeignKey(
+        Order, on_delete=models.CASCADE, related_name="items", db_index=True
+    )
     product = models.ForeignKey(Product, on_delete=models.CASCADE, db_index=True)
     quantity = models.PositiveIntegerField(validators=[MinValueValidator(1)])
     price = models.DecimalField(
@@ -97,12 +101,21 @@ class Payment(models.Model):
 
     id = models.BigAutoField(primary_key=True)
     order = models.ForeignKey(
-        Order, on_delete=models.SET_NULL, related_name="payments", null=True, db_index=True
+        Order,
+        on_delete=models.SET_NULL,
+        related_name="payments",
+        null=True,
+        db_index=True,
     )
-    payment_method = models.CharField(max_length=20, choices=PaymentMethod, db_index=True)
+    payment_method = models.CharField(
+        max_length=20, choices=PaymentMethod, db_index=True
+    )
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(
-        max_length=20, choices=PaymentStatus, default=PaymentStatus.PENDING, db_index=True
+        max_length=20,
+        choices=PaymentStatus,
+        default=PaymentStatus.PENDING,
+        db_index=True,
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

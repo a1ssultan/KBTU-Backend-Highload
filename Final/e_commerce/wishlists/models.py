@@ -7,7 +7,9 @@ from products.models import Product
 
 class Wishlist(models.Model):
     id = models.BigAutoField(primary_key=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="wishlists", db_index=True)
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="wishlists", db_index=True
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
