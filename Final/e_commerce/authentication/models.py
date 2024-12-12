@@ -21,7 +21,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
-    object = CustomUserManager()
+    objects = CustomUserManager()
 
     def __str__(self):
         return self.email

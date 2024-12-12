@@ -1,3 +1,4 @@
+from django.core.validators import MinValueValidator
 from django.db import models
 
 from authentication.models import User
@@ -25,13 +26,16 @@ class Order(models.Model):
     def __str__(self):
         return f"Order {self.id}"
 
+    def calculate_total_amount(self):
+        return sum(item.quantity * item.price for item in self.items.all())
+
 
 class OrderItem(models.Model):
     id = models.BigAutoField(primary_key=True)
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    quantity = models.PositiveIntegerField(validators=[MinValueValidator(1)])
+    price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(1)])
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -60,6 +64,9 @@ class CartItem(models.Model):
     def __str__(self):
         return f"CartItem {self.id}"
 
+    def is_available(self):
+        return self.product.stock_quantity >= self.quantity
+
 
 class Payment(models.Model):
     class PaymentMethod(models.TextChoices):
@@ -75,7 +82,7 @@ class Payment(models.Model):
 
     id = models.BigAutoField(primary_key=True)
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='payments')
-    payment_method = models.CharField(max_length=50, choices=PaymentMethod)
+    payment_method = models.CharField(max_length=20, choices=PaymentMethod)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(max_length=20, choices=PaymentStatus, default=PaymentStatus.PENDING)
     created_at = models.DateTimeField(auto_now_add=True)
