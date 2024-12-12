@@ -1,3 +1,5 @@
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from products.models import Category, Product
 from products.serializers import CategorySerializer, ProductSerializer
 from rest_framework import generics
@@ -18,12 +20,14 @@ class CategoryDetailView(generics.RetrieveAPIView):
     serializer_class = CategorySerializer
 
 
+@method_decorator(cache_page(60 * 15), name="dispatch")
 class ProductListView(generics.ListAPIView):
     permission_classes = [AllowAny]
     queryset = Product.objects.select_related("category")
     serializer_class = ProductSerializer
 
 
+@method_decorator(cache_page(60 * 15), name="dispatch")
 class ProductDetailView(generics.RetrieveAPIView):
     permission_classes = [AllowAny]
     queryset = Product.objects.select_related("category")
