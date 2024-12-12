@@ -12,7 +12,7 @@ class WishlistView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        wishlist, created = Wishlist.objects.get_or_create(user=request.user)
+        wishlist, created = Wishlist.objects.prefetch_related("items__product").get_or_create(user=request.user)
         serializer = WishlistSerializer(wishlist)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -31,7 +31,7 @@ class WishlistView(APIView):
                 {"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND
             )
 
-        wishlist, created = Wishlist.objects.get_or_create(user=request.user)
+        wishlist, created = Wishlist.objects.prefetch_related("items").get_or_create(user=request.user)
         wishlist_item, created = WishlistItem.objects.get_or_create(
             wishlist=wishlist, product=product
         )
@@ -54,7 +54,7 @@ class WishlistView(APIView):
                 {"error": "Product ID is required"}, status=status.HTTP_400_BAD_REQUEST
             )
 
-        wishlist, created = Wishlist.objects.get_or_create(user=request.user)
+        wishlist, created = Wishlist.objects.prefetch_related("items").get_or_create(user=request.user)
         try:
             wishlist_item = WishlistItem.objects.get(
                 wishlist=wishlist, product_id=product_id
@@ -75,6 +75,7 @@ class ClearWishlistView(APIView):
 
     @transaction.atomic
     def post(self, request):
-        wishlist, created = Wishlist.objects.get_or_create(user=request.user)
+        wishlist, created = Wishlist.objects.prefetch_related("items").get_or_create(user=request.user)
         wishlist.items.all().delete()
         return Response({"message": "Wishlist cleared"}, status=status.HTTP_200_OK)
+

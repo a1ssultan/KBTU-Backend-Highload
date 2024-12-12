@@ -7,7 +7,7 @@ from products.models import Product
 
 class Wishlist(models.Model):
     id = models.BigAutoField(primary_key=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="wishlists")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="wishlists", db_index=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -18,9 +18,9 @@ class Wishlist(models.Model):
 class WishlistItem(models.Model):
     id = models.BigAutoField(primary_key=True)
     wishlist = models.ForeignKey(
-        Wishlist, on_delete=models.CASCADE, related_name="items"
+        Wishlist, on_delete=models.CASCADE, related_name="items", db_index=True
     )
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

@@ -1,6 +1,5 @@
-from django.db import models
-
 from authentication.models import User
+from django.db import models
 from products.models import Product
 
 # Create your models here.
@@ -9,10 +8,10 @@ from products.models import Product
 class Review(models.Model):
     id = models.BigAutoField(primary_key=True)
     product = models.ForeignKey(
-        Product, on_delete=models.CASCADE, related_name="reviews"
+        Product, on_delete=models.CASCADE, related_name="reviews", db_index=True
     )
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="reviews")
-    rating = models.IntegerField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="reviews", db_index=True)
+    rating = models.IntegerField(db_index=True)
     comment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

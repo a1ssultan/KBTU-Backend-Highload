@@ -6,7 +6,7 @@ from reviews.serializers import CreateUpdateReviewSerializer, ReviewSerializer
 
 class ReviewViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
-    queryset = Review.objects.all()
+    queryset = Review.objects.select_related("product", "user")
 
     def get_serializer_class(self):
         if self.request.method in ["POST", "PUT", "PATCH"]:
@@ -15,7 +15,11 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         if self.request.method == "GET" and not self.kwargs.get("pk"):
-            return Review.objects.filter(user=self.request.user)
+            return (
+                Review.objects.filter(user=self.request.user)
+                .select_related("product")
+                .order_by("-created_at")
+            )
         return super().get_queryset()
 
     def perform_create(self, serializer):

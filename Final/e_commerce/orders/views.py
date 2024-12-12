@@ -15,7 +15,7 @@ from rest_framework.response import Response
 
 
 class OrderViewSet(viewsets.ModelViewSet):
-    queryset = Order.objects.prefetch_related("items").select_related("user")
+    queryset = Order.objects.prefetch_related("items__product").select_related("user")
     serializer_class = OrderSerializer
 
     @transaction.atomic
@@ -25,26 +25,17 @@ class OrderViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["post"])
     def cancel(self, request, pk=None):
         order = self.get_object()
-        if order.order_status == Order.OrderStatus.PAID:
+        if order.order_status in [Order.OrderStatus.CANCELED, Order.OrderStatus.DELIVERED]:
             return Response(
-                {"error": "Cannot cancel a paid order"},
-                status=status.HTTP_400_BAD_REQUEST,
+                {"error": "Cannot cancel this order"}, status=status.HTTP_400_BAD_REQUEST
             )
-
-        if order.order_status not in [
-            Order.OrderStatus.CANCELED,
-            Order.OrderStatus.DELIVERED,
-        ]:
-            order.order_status = Order.OrderStatus.CANCELED
-            order.save()
-            return Response({"status": "Order canceled"}, status=status.HTTP_200_OK)
-        return Response(
-            {"error": "Cannot cancel this order"}, status=status.HTTP_400_BAD_REQUEST
-        )
+        order.order_status = Order.OrderStatus.CANCELED
+        order.save()
+        return Response({"status": "Order canceled"}, status=status.HTTP_200_OK)
 
 
 class ShoppingCartViewSet(viewsets.ModelViewSet):
-    queryset = ShoppingCart.objects.prefetch_related("items").select_related("user")
+    queryset = ShoppingCart.objects.prefetch_related("items__product").select_related("user")
     serializer_class = ShoppingCartSerializer
 
     def perform_create(self, serializer):
@@ -57,17 +48,10 @@ class ShoppingCartViewSet(viewsets.ModelViewSet):
         product_id = request.data.get("product")
         quantity = request.data.get("quantity", 1)
 
-        if not product_id:
-            return Response(
-                {"error": "Product ID is required"}, status=status.HTTP_400_BAD_REQUEST
-            )
-
         try:
             product = Product.objects.get(id=product_id)
         except Product.DoesNotExist:
-            return Response(
-                {"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND
-            )
+            return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
 
         cart_item, created = CartItem.objects.get_or_create(
             cart=cart, product=product, defaults={"quantity": quantity}
@@ -77,8 +61,7 @@ class ShoppingCartViewSet(viewsets.ModelViewSet):
             cart_item.quantity += quantity
             if cart_item.quantity > product.stock_quantity:
                 return Response(
-                    {"error": f"Not enough stock for product {product.name}"},
-                    status=status.HTTP_400_BAD_REQUEST,
+                    {"error": f"Not enough stock for product {product.name}"}, status=status.HTTP_400_BAD_REQUEST
                 )
             cart_item.save()
 
