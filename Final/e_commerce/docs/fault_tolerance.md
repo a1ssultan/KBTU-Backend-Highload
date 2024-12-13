@@ -27,8 +27,8 @@ High-load systems must be designed with fault tolerance and resilience to ensure
 
 1. **Database Backups**
    - Scheduled automatic backups of the primary database using **pg_dump**:
-     ![img_10.png](img_10.png)
-   - ![img_11.png](img_11.png)
+     ![img_10.png](db_backup_code.png)
+   - ![img_11.png](backup_file_created.png)
 
    - Automate these scripts using cron jobs:
 
