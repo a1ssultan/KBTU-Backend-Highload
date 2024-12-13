@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     "drf_spectacular_sidecar",
     "debug_toolbar",
     "django_prometheus",
+    "django_ratelimit",
 ]
 
 MIDDLEWARE = [
@@ -67,6 +68,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django_prometheus.middleware.PrometheusAfterMiddleware",
+    "authentication.middleware.IPWhitelistMiddleware",
 ]
 
 INTERNAL_IPS = [

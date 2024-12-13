@@ -1,3 +1,5 @@
+from django.utils.decorators import method_decorator
+from django_ratelimit.decorators import ratelimit
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -7,10 +9,12 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import CustomTokenObtainPairSerializer, UserSerializer
 
 
+@method_decorator(ratelimit(key="ip", rate="5/m", block=True), name="dispatch")
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
 
+@method_decorator(ratelimit(key="ip", rate="3/m", block=True), name="dispatch")
 class RegisterViewSet(viewsets.ViewSet):
     permission_classes = [AllowAny]
 
